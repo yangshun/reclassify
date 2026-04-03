@@ -1,7 +1,7 @@
 export {
   cx,
+  cxDefault,
   configure,
-  defaultClassify,
   type ClassArray,
   type ClassDictionary,
   type ClassifyFn,

@@ -9,7 +9,7 @@ type ConfigureOptions = {
   cx: ClassifyFn;
 };
 
-let activeConstructor: ClassifyFn = defaultClassify;
+let activeConstructor: ClassifyFn = cxDefault;
 
 export function configure({ cx }: ConfigureOptions): () => void {
   const previousConstructor = activeConstructor;
@@ -24,6 +24,6 @@ export function cx(value: ClassValue): string {
   return activeConstructor(value);
 }
 
-export function defaultClassify(value: ClassValue): string {
+export function cxDefault(value: ClassValue): string {
   return clsx(value);
 }

@@ -1,23 +1,23 @@
 import { describe, expect, it } from "vite-plus/test";
-import { cx, configure, defaultClassify } from "./index";
+import { cx, cxDefault, configure } from "./index";
 
-describe("defaultClassify", () => {
+describe("cxDefault", () => {
   it("returns strings unchanged", () => {
-    expect(defaultClassify("btn primary")).toBe("btn primary");
+    expect(cxDefault("btn primary")).toBe("btn primary");
   });
 
   it("keeps truthy number tokens while dropping zero", () => {
-    expect(defaultClassify(0)).toBe("");
-    expect(defaultClassify(42)).toBe("42");
+    expect(cxDefault(0)).toBe("");
+    expect(cxDefault(42)).toBe("42");
   });
 
   it("flattens nested arrays depth-first", () => {
-    expect(defaultClassify(["btn", ["primary", ["focus"]], "wide"])).toBe("btn primary focus wide");
+    expect(cxDefault(["btn", ["primary", ["focus"]], "wide"])).toBe("btn primary focus wide");
   });
 
   it("includes object keys with truthy values", () => {
     expect(
-      defaultClassify({
+      cxDefault({
         btn: true,
         primary: 1,
         disabled: false,
@@ -27,7 +27,7 @@ describe("defaultClassify", () => {
 
   it("supports mixed values while ignoring falsy entries", () => {
     expect(
-      defaultClassify([
+      cxDefault([
         "btn",
         0,
         false,
@@ -40,14 +40,14 @@ describe("defaultClassify", () => {
   });
 
   it("preserves object and array order", () => {
-    expect(
-      defaultClassify(["first", { second: true, third: true }, ["fourth", { fifth: true }]]),
-    ).toBe("first second third fourth fifth");
+    expect(cxDefault(["first", { second: true, third: true }, ["fourth", { fifth: true }]])).toBe(
+      "first second third fourth fifth",
+    );
   });
 
   it("supports class keys containing spaces", () => {
     expect(
-      defaultClassify({
+      cxDefault({
         "btn primary": true,
         hidden: false,
       }),
@@ -55,22 +55,22 @@ describe("defaultClassify", () => {
   });
 
   it("returns an empty string when no class names are enabled", () => {
-    expect(defaultClassify(false)).toBe("");
-    expect(defaultClassify([null, undefined, false, { hidden: 0 }])).toBe("");
+    expect(cxDefault(false)).toBe("");
+    expect(cxDefault([null, undefined, false, { hidden: 0 }])).toBe("");
   });
 
   it("matches documented clsx falsy handling", () => {
-    expect(defaultClassify([true, false, "", null, undefined, 0, Number.NaN])).toBe("");
+    expect(cxDefault([true, false, "", null, undefined, 0, Number.NaN])).toBe("");
   });
 
   it("drops empty strings", () => {
-    expect(defaultClassify("")).toBe("");
-    expect(defaultClassify(["btn", "", "primary"])).toBe("btn primary");
+    expect(cxDefault("")).toBe("");
+    expect(cxDefault(["btn", "", "primary"])).toBe("btn primary");
   });
 
   it("returns an empty string for null and undefined", () => {
-    expect(defaultClassify(null)).toBe("");
-    expect(defaultClassify(undefined)).toBe("");
+    expect(cxDefault(null)).toBe("");
+    expect(cxDefault(undefined)).toBe("");
   });
 });
 
@@ -81,7 +81,7 @@ describe("cx", () => {
 
   it("uses the configured construction function", () => {
     const restore = configure({
-      cx: (value) => `configured:${defaultClassify(value)}`,
+      cx: (value) => `configured:${cxDefault(value)}`,
     });
 
     try {
@@ -93,13 +93,13 @@ describe("cx", () => {
     expect(cx(["btn", { active: true }])).toBe("btn active");
   });
 
-  it("keeps defaultClassify stable while configured", () => {
+  it("keeps cxDefault stable while configured", () => {
     const restore = configure({
       cx: () => "configured",
     });
 
     try {
-      expect(defaultClassify(["btn", { active: true }])).toBe("btn active");
+      expect(cxDefault(["btn", { active: true }])).toBe("btn active");
       expect(cx(["btn", { active: true }])).toBe("configured");
     } finally {
       restore();
@@ -108,10 +108,10 @@ describe("cx", () => {
 
   it("restores nested configuration in LIFO order", () => {
     const restoreOuter = configure({
-      cx: (value) => `outer:${defaultClassify(value)}`,
+      cx: (value) => `outer:${cxDefault(value)}`,
     });
     const restoreInner = configure({
-      cx: (value) => `inner:${defaultClassify(value)}`,
+      cx: (value) => `inner:${cxDefault(value)}`,
     });
 
     try {

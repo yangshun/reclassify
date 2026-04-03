@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vite-plus/test";
 import * as ReactJSXRuntime from "react/jsx-runtime";
-import { configure, defaultClassify } from "./index";
+import { configure, cxDefault } from "./index";
 import { jsx, jsxs } from "./jsx-runtime";
 import { jsxDEV } from "./jsx-dev-runtime";
 
@@ -98,7 +98,7 @@ describe("jsx runtime wrappers", () => {
 
   it("uses the configured construction function for intrinsic jsx", () => {
     const restore = configure({
-      cx: (value) => `runtime:${defaultClassify(value)}`,
+      cx: (value) => `runtime:${cxDefault(value)}`,
     });
 
     try {
@@ -114,7 +114,7 @@ describe("jsx runtime wrappers", () => {
 
   it("uses the configured construction function for intrinsic jsxs and jsxDEV", () => {
     const restore = configure({
-      cx: (value) => `runtime:${defaultClassify(value)}`,
+      cx: (value) => `runtime:${cxDefault(value)}`,
     });
 
     try {

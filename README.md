@@ -5,7 +5,7 @@
 ```jsx
 // Before:
 <button className={
-  clsx(["btn", ["btn-primary", { "btn-disabled": false }], { "is-active": true }])
+  clsx("btn", "btn-primary", { "btn-disabled": isLoading })
 }>
   Save
 </button>
@@ -13,7 +13,7 @@
 // After:
 <button className={
   // No need for clsx
-  ["btn", ["btn-primary", { "btn-disabled": false }], { "is-active": true }]
+  ["btn", "btn-primary", { "btn-disabled": isLoading }]
 }>
   Save
 </button>
@@ -33,15 +33,6 @@ It constructs `className` strings for intrinsic elements only. Custom components
 ```bash
 npm install reclassify # Requires React >= 17 (automatic JSX runtime)
 ```
-
-> [!NOTE]
-> In `v0.5.0`, the exported helper was renamed from `classify` to `cx`, and
-> `configure({ fn })` was renamed to `configure({ cx })`.
->
-> If you import it manually in custom components or utilities, update
-> `import { classify } from "reclassify"` to `import { cx } from "reclassify"`.
->
-> Intrinsic JSX `className` handling is otherwise unchanged.
 
 ## Usage
 
@@ -93,6 +84,16 @@ Configure `@babel/preset-react` with the automatic runtime and `importSource`:
 }
 ```
 
+> [!NOTE]
+>
+> If you're upgrading from older API names:
+>
+> - `classify` was renamed to `cx`,
+> - `defaultClassify` was renamed to `cxDefault`,
+> - `configure({ fn })` was renamed to `configure({ cx })`.
+>
+> Intrinsic JSX `className` handling is otherwise unchanged.
+
 ## How it works
 
 Under the hood, `reclassify` is a custom JSX runtime for React that lets you pass arrays and objects as `className` on intrinsic elements.
@@ -130,15 +131,15 @@ const restore = configure({ cx: cn });
 restore();
 ```
 
-If you want to use `tailwind-merge` directly, compose it with `defaultClassify()` so `reclassify` still handles arrays and objects before Tailwind class conflict resolution runs:
+If you want to use `tailwind-merge` directly, compose it with `cxDefault()` so `reclassify` still handles arrays and objects before Tailwind class conflict resolution runs:
 
 ```ts
-import { configure, defaultClassify, type ClassValue } from "reclassify";
+import { configure, cxDefault, type ClassValue } from "reclassify";
 import { twMerge } from "tailwind-merge";
 
 configure({
   cx(value: ClassValue) {
-    return twMerge(defaultClassify(value));
+    return twMerge(cxDefault(value));
   },
 });
 
@@ -153,14 +154,14 @@ configure({
 - Client-side rendering / SPAs (e.g. default Vite): Call it in your main entry module before `render()`
 - Server-side rendering (e.g. Next.js): Call it in the earliest server entry and earliest client entry that render JSX (e.g. root layout component)
 
-If your custom function wants to build on the default behavior, you can import `defaultClassify` and use it:
+If your custom function wants to build on the default behavior, you can import `cxDefault` and use it:
 
 ```ts
-import { configure, defaultClassify, type ClassValue } from "reclassify";
+import { configure, cxDefault, type ClassValue } from "reclassify";
 
 configure({
   cx(value: ClassValue) {
-    const constructed = defaultClassify(value);
+    const constructed = cxDefault(value);
     return constructed ? `custom ${constructed}` : "custom";
   },
 });
