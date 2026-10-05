@@ -120,6 +120,7 @@ Once configured, intrinsic elements accept arrays and objects for `className` wi
 If you want to replace the built-in class construction function, before your app starts rendering JSX, call `configure()` once with your custom implementation. It returns a function that restores the previous construction function.
 
 Here's an example using the standalone [`cn`](https://github.com/shadcn-ui/cn) library.
+Install it separately with `npm install cn`.
 
 ```ts
 import { configure } from "reclassify";
