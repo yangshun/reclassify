@@ -1,5 +1,9 @@
 import "./globals.css";
 import type { ReactNode } from "react";
+import { cn } from "cn";
+import { configure } from "reclassify";
+
+configure({ cx: cn });
 
 export const metadata = {
   description: "Next.js example for reclassify",

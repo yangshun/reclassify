@@ -119,11 +119,12 @@ Once configured, intrinsic elements accept arrays and objects for `className` wi
 
 If you want to replace the built-in class construction function, before your app starts rendering JSX, call `configure()` once with your custom implementation. It returns a function that restores the previous construction function.
 
-Here's an example using the `cn` util commonly-found in shadcn projects.
+Here's an example using the standalone [`cn`](https://github.com/shadcn-ui/cn) library.
+Install it separately with `npm install cn`.
 
 ```ts
 import { configure } from "reclassify";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 const restore = configure({ cx: cn });
 
@@ -210,8 +211,8 @@ Useful commands:
 
 Examples can be found in `apps/`:
 
-- `apps/vite`: The Vite app demonstrates intrinsic `className` arrays and objects directly in JSX, plus a custom component that opts into the same pattern with `cx`.
-- `apps/next`: The Next.js app shows the same API through a framework setup using `jsxImportSource: "reclassify"` in `tsconfig.json`.
+- `apps/vite`: The Vite app demonstrates intrinsic `className` arrays and objects directly in JSX, using the standalone `cn` library for class construction.
+- `apps/next`: The Next.js app shows the same API through a framework setup using `jsxImportSource: "reclassify"` in `tsconfig.json`, with `cn` configured for class construction.
 
 Both apps consume `reclassify` through the workspace package itself rather than importing source files from outside their own package directories.
 
